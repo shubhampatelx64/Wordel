@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wordel</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Wordel</h1>
+          <p class="small">Play custom Wordle challenges created by your admins.</p>
+        </div>
+        <a href="/admin.html">Go to Admin</a>
+      </header>
+
+      <div class="two-col">
+        <section class="panel">
+          <h2>Play</h2>
+          <div id="startPanel">
+            <label>
+              Your Name
+              <input id="playerName" placeholder="e.g. Alex" minlength="2" />
+            </label>
+            <br /><br />
+            <button id="startGameBtn">Start New Game</button>
+            <button class="secondary" id="loadProgressBtn">Load My Progress</button>
+            <p id="startMsg" class="small"></p>
+          </div>
+
+          <div id="gamePanel" style="display:none;">
+            <p><strong>Player:</strong> <span id="activePlayer"></span></p>
+            <p><strong>Hint:</strong> <span id="hint"></span></p>
+            <p><strong>Status:</strong> <span id="status">In progress</span></p>
+            <div id="board" class="grid"></div>
+            <br />
+            <label>
+              Enter Guess
+              <input id="guessInput" maxlength="5" placeholder="5 letters" />
+            </label>
+            <br /><br />
+            <button id="guessBtn">Submit Guess</button>
+            <button class="secondary" id="refreshSessionBtn">Refresh Progress</button>
+            <p id="gameMsg" class="small"></p>
+          </div>
+        </section>
+
+        <aside>
+          <section class="panel">
+            <h3>Leaderboard</h3>
+            <table class="table" id="leaderboardTable">
+              <thead>
+                <tr><th>Player</th><th>Best</th><th>Wins</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </section>
+
+          <section class="panel">
+            <h3>Game Analytics</h3>
+            <p>Total Sessions: <strong id="totalSessions">0</strong></p>
+            <p>Unique Players: <strong id="uniquePlayers">0</strong></p>
+            <p>Average Score: <strong id="avgScore">0</strong></p>
+            <p>Wins / Losses: <strong id="wlr">0 / 0</strong></p>
+          </section>
+
+          <section class="panel">
+            <h3>My Recent Games</h3>
+            <table class="table" id="progressTable">
+              <thead>
+                <tr><th>Session</th><th>Status</th><th>Attempts</th><th>Score</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <script src="/main.js"></script>
+  </body>
+</html>
