@@ -16,6 +16,8 @@ npm install
 cp .env.example .env
 # set ADMIN_TOKEN in .env, then:
 ADMIN_TOKEN=your-secret-token npm start
+ADMIN_TOKEN=your-secret-token npm start
+npm start
 ```
 
 Then open:
@@ -27,7 +29,7 @@ Then open:
 
 ## Deploy to GitHub + Render (recommended)
 
-I cannot directly log into your GitHub account from this environment, but the repo is prepared for one-click deployment from GitHub.
+You asked to host this on GitHub so you can interact with the product. I cannot directly log into your GitHub account from this environment, but the repo is now prepared for one-click deployment from GitHub.
 
 ### 1) Push to your GitHub repository
 
@@ -52,40 +54,6 @@ git push -u origin work
 - To set your own token, open Render service → **Environment** and set `ADMIN_TOKEN` manually, then redeploy.
 - Use this same token on `/admin.html`.
 
-
-### Pull request conflict safety (important)
-
-If GitHub shows conflicts, **do not use “Accept all incoming changes”** blindly.
-That often drops required scripts/files and breaks CI/builds.
-
-Recommended conflict flow:
-
-```bash
-git checkout work
-git fetch origin
-git rebase origin/main
-# resolve each conflict carefully, keep required scripts/files
-npm run validate:repo
-npm run check
-git rebase --continue
-```
-
-The repo now includes `npm run validate:repo` and CI runs it automatically to catch:
-- leftover merge conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
-- missing critical files (like `server.js` or CI workflow)
-- missing `package.json` scripts (`start`, `check`)
-
-### Render deploy troubleshooting
-
-If Render logs `SyntaxError: Unexpected end of input` for `server.js`:
-
-1. Verify Render is deploying the branch that contains the latest commit.
-2. Ensure GitHub has the latest pushed code (`git push`).
-3. In Render, trigger **Manual Deploy** → **Clear build cache & deploy**.
-4. Confirm the service start command is `npm start`.
-
-This repo now runs a startup syntax check (`npm run check`) and includes a GitHub Actions CI workflow that checks `server.js` syntax before deploy.
-
 ## API overview
 
 - `POST /api/puzzles` - create puzzle (admin token required)
@@ -95,5 +63,12 @@ This repo now runs a startup syntax check (`npm run check`) and includes a GitHu
 - `POST /api/sessions/:id/guess` - submit guess
 - `GET /api/sessions/:id` - fetch session progress
 - `GET /api/progress?playerName=...` - fetch recent player history
+## API overview
+
+- `POST /api/puzzles` - create puzzle
+- `PATCH /api/puzzles/:id/active` - toggle puzzle active status
+- `POST /api/sessions` - start a player session
+- `POST /api/sessions/:id/guess` - submit guess
+- `GET /api/sessions/:id` - fetch session progress
 - `GET /api/leaderboard` - leaderboard data
 - `GET /api/stats` - player/session analytics

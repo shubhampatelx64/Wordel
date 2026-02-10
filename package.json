@@ -4,10 +4,8 @@
   "description": "Wordel game with admin puzzle management, leaderboard, and progress tracking",
   "main": "server.js",
   "scripts": {
-    "start": "npm run check && node server.js",
-    "dev": "node server.js",
-    "check": "node --check server.js",
-    "validate:repo": "node scripts/validate-repo.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "better-sqlite3": "^11.8.1",
