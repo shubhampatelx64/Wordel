@@ -4,6 +4,7 @@ const Database = require('better-sqlite3');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'change-me-admin-token';
 const db = new Database(path.join(__dirname, 'wordel.db'));
 
 app.use(express.json());
@@ -81,6 +82,17 @@ function calculateScore(attemptsUsed, won) {
   return Math.max(10, 70 - (attemptsUsed - 1) * 10);
 }
 
+function requireAdmin(req, res, next) {
+  const token = req.get('x-admin-token');
+  if (!token || token !== ADMIN_TOKEN) {
+    return res.status(401).json({ error: 'Unauthorized. Provide a valid admin token.' });
+  }
+  return next();
+}
+
+setupDatabase();
+
+app.get('/api/puzzles', requireAdmin, (req, res) => {
 setupDatabase();
 
 app.get('/api/puzzles', (req, res) => {
@@ -88,6 +100,7 @@ app.get('/api/puzzles', (req, res) => {
   res.json(puzzles);
 });
 
+app.post('/api/puzzles', requireAdmin, (req, res) => {
 app.post('/api/puzzles', (req, res) => {
   const { word, hint, active = true } = req.body;
   const cleanWord = (word || '').trim().toUpperCase();
@@ -109,6 +122,7 @@ app.post('/api/puzzles', (req, res) => {
   return res.status(201).json(puzzle);
 });
 
+app.patch('/api/puzzles/:id/active', requireAdmin, (req, res) => {
 app.patch('/api/puzzles/:id/active', (req, res) => {
   const id = Number(req.params.id);
   const { active } = req.body;
@@ -236,6 +250,32 @@ app.post('/api/sessions/:id/guess', (req, res) => {
     remainingAttempts: Math.max(0, 6 - attemptsUsed),
     score,
   });
+});
+
+app.get('/api/progress', (req, res) => {
+  const playerName = (req.query.playerName || '').toString().trim();
+  if (playerName.length < 2) {
+    return res.status(400).json({ error: 'playerName query is required (min 2 characters).' });
+  }
+
+  const history = db
+    .prepare(
+      `SELECT s.id as sessionId,
+              s.status,
+              s.attempts_used as attemptsUsed,
+              s.score,
+              s.created_at as createdAt,
+              s.completed_at as completedAt,
+              p.hint
+         FROM sessions s
+         JOIN puzzles p ON p.id = s.puzzle_id
+        WHERE s.player_name = ?
+        ORDER BY s.id DESC
+        LIMIT 20`
+    )
+    .all(playerName);
+
+  return res.json({ playerName, history });
 });
 
 app.get('/api/leaderboard', (req, res) => {
