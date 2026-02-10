@@ -77,6 +77,14 @@ function renderProgress(history) {
     score.textContent = String(item.score);
 
     tr.append(session, status, attempts, score);
+async function fetchLeaderboard() {
+  const res = await fetch('/api/leaderboard');
+  const data = await res.json();
+  const tbody = document.querySelector('#leaderboardTable tbody');
+  tbody.innerHTML = '';
+  data.forEach((row) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${row.playerName}</td><td>${row.bestScore}</td><td>${row.wins}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -126,12 +134,14 @@ async function refreshSession() {
 
   if (data.status !== 'in_progress') {
     setGameMessage(`Game finished. Score: ${data.score}`);
+    gameMsg.textContent = `Game finished. Score: ${data.score}`;
   }
 }
 
 document.getElementById('startGameBtn').addEventListener('click', async () => {
   const playerName = document.getElementById('playerName').value.trim();
   setStartMessage('');
+  startMsg.textContent = '';
   try {
     const res = await fetch('/api/sessions', {
       method: 'POST',
@@ -154,6 +164,12 @@ document.getElementById('startGameBtn').addEventListener('click', async () => {
     await Promise.all([fetchLeaderboard(), fetchStats(), fetchProgress()]);
   } catch (err) {
     setStartMessage(err.message, 'error');
+    gameMsg.textContent = 'Game started!';
+    renderBoard();
+    await Promise.all([fetchLeaderboard(), fetchStats()]);
+  } catch (err) {
+    startMsg.className = 'error';
+    startMsg.textContent = err.message;
   }
 });
 
@@ -163,6 +179,7 @@ document.getElementById('guessBtn').addEventListener('click', async () => {
   if (!sessionId) return;
 
   setGameMessage('');
+  gameMsg.textContent = '';
   try {
     const res = await fetch(`/api/sessions/${sessionId}/guess`, {
       method: 'POST',
@@ -183,6 +200,18 @@ document.getElementById('guessBtn').addEventListener('click', async () => {
     }
   } catch (err) {
     setGameMessage(err.message, 'error');
+    await Promise.all([fetchLeaderboard(), fetchStats()]);
+
+    if (data.status === 'won') {
+      gameMsg.className = 'success';
+      gameMsg.textContent = `Great job! You won with score ${data.score}.`;
+    } else if (data.status === 'lost') {
+      gameMsg.className = 'error';
+      gameMsg.textContent = 'Out of attempts. Better luck next round.';
+    }
+  } catch (err) {
+    gameMsg.className = 'error';
+    gameMsg.textContent = err.message;
   }
 });
 
