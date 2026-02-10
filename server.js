@@ -93,11 +93,15 @@ function requireAdmin(req, res, next) {
 setupDatabase();
 
 app.get('/api/puzzles', requireAdmin, (req, res) => {
+setupDatabase();
+
+app.get('/api/puzzles', (req, res) => {
   const puzzles = db.prepare('SELECT id, word, hint, active, created_at FROM puzzles ORDER BY created_at DESC').all();
   res.json(puzzles);
 });
 
 app.post('/api/puzzles', requireAdmin, (req, res) => {
+app.post('/api/puzzles', (req, res) => {
   const { word, hint, active = true } = req.body;
   const cleanWord = (word || '').trim().toUpperCase();
 
@@ -119,6 +123,7 @@ app.post('/api/puzzles', requireAdmin, (req, res) => {
 });
 
 app.patch('/api/puzzles/:id/active', requireAdmin, (req, res) => {
+app.patch('/api/puzzles/:id/active', (req, res) => {
   const id = Number(req.params.id);
   const { active } = req.body;
 

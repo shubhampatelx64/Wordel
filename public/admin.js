@@ -43,6 +43,21 @@ function renderPuzzles(puzzles) {
     action.appendChild(btn);
 
     tr.append(id, word, hint, active, action);
+
+async function fetchPuzzles() {
+  const res = await fetch('/api/puzzles');
+  const puzzles = await res.json();
+
+  tableBody.innerHTML = '';
+  puzzles.forEach((p) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.word}</td>
+      <td>${p.hint || '-'}</td>
+      <td>${p.active ? 'Yes' : 'No'}</td>
+      <td><button data-id="${p.id}" data-active="${p.active ? '1' : '0'}">${p.active ? 'Deactivate' : 'Activate'}</button></td>
+    `;
     tableBody.appendChild(tr);
   });
 }
@@ -62,6 +77,9 @@ async function fetchPuzzles() {
 
 async function createPuzzle() {
   setMessage('');
+async function createPuzzle() {
+  adminMsg.textContent = '';
+  adminMsg.className = 'small';
 
   const word = document.getElementById('wordInput').value.trim();
   const hint = document.getElementById('hintInput').value.trim();
@@ -71,6 +89,7 @@ async function createPuzzle() {
     const res = await fetch('/api/puzzles', {
       method: 'POST',
       headers: adminHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word, hint, active }),
     });
 
@@ -78,11 +97,15 @@ async function createPuzzle() {
     if (!res.ok) throw new Error(data.error || 'Unable to create puzzle');
 
     setMessage(`Puzzle ${data.word} created.`, 'success');
+    adminMsg.className = 'success';
+    adminMsg.textContent = `Puzzle ${data.word} created.`;
     document.getElementById('wordInput').value = '';
     document.getElementById('hintInput').value = '';
     await fetchPuzzles();
   } catch (err) {
     setMessage(err.message, 'error');
+    adminMsg.className = 'error';
+    adminMsg.textContent = err.message;
   }
 }
 
@@ -112,3 +135,14 @@ tableBody.addEventListener('click', async (event) => {
 document.getElementById('createBtn').addEventListener('click', createPuzzle);
 
 fetchPuzzles().catch((err) => setMessage(err.message, 'error'));
+  await fetch(`/api/puzzles/${id}/active`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ active: !currentActive }),
+  });
+
+  fetchPuzzles();
+});
+
+document.getElementById('createBtn').addEventListener('click', createPuzzle);
+fetchPuzzles();
