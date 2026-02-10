@@ -16,6 +16,8 @@ npm install
 cp .env.example .env
 # set ADMIN_TOKEN in .env, then:
 ADMIN_TOKEN=your-secret-token npm start
+ADMIN_TOKEN=your-secret-token npm start
+npm start
 ```
 
 Then open:
@@ -61,5 +63,12 @@ git push -u origin work
 - `POST /api/sessions/:id/guess` - submit guess
 - `GET /api/sessions/:id` - fetch session progress
 - `GET /api/progress?playerName=...` - fetch recent player history
+## API overview
+
+- `POST /api/puzzles` - create puzzle
+- `PATCH /api/puzzles/:id/active` - toggle puzzle active status
+- `POST /api/sessions` - start a player session
+- `POST /api/sessions/:id/guess` - submit guess
+- `GET /api/sessions/:id` - fetch session progress
 - `GET /api/leaderboard` - leaderboard data
 - `GET /api/stats` - player/session analytics
