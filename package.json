@@ -1,0 +1,16 @@
+{
+  "name": "wordel",
+  "version": "1.0.0",
+  "description": "Wordel game with admin puzzle management, leaderboard, and progress tracking",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm run check && node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js",
+    "validate:repo": "node scripts/validate-repo.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2"
+  }
+}
