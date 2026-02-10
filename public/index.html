@@ -26,6 +26,7 @@
             </label>
             <br /><br />
             <button id="startGameBtn">Start New Game</button>
+            <button class="secondary" id="loadProgressBtn">Load My Progress</button>
             <p id="startMsg" class="small"></p>
           </div>
 
@@ -63,6 +64,16 @@
             <p>Unique Players: <strong id="uniquePlayers">0</strong></p>
             <p>Average Score: <strong id="avgScore">0</strong></p>
             <p>Wins / Losses: <strong id="wlr">0 / 0</strong></p>
+          </section>
+
+          <section class="panel">
+            <h3>My Recent Games</h3>
+            <table class="table" id="progressTable">
+              <thead>
+                <tr><th>Session</th><th>Status</th><th>Attempts</th><th>Score</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </section>
         </aside>
       </div>
