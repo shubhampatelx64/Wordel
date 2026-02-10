@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wordel Admin</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <h1>Wordel Admin</h1>
+          <p class="small">Create and manage Wordle tasks for players.</p>
+        </div>
+        <a href="/">Back to Game</a>
+      </header>
+
+      <section class="panel">
+        <h2>Admin Access</h2>
+        <label>
+          Admin Token
+          <input id="adminTokenInput" type="password" placeholder="Set the same value as ADMIN_TOKEN" />
+        </label>
+        <p class="small">Token is stored in your browser for this device.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Create New Puzzle</h2>
+        <label>
+          5-letter word
+          <input id="wordInput" maxlength="5" placeholder="e.g. BRICK" />
+        </label>
+        <br /><br />
+        <label>
+          Hint (optional)
+          <input id="hintInput" placeholder="e.g. Building material" />
+        </label>
+        <br /><br />
+        <label><input id="activeInput" type="checkbox" checked /> Active immediately</label>
+        <br /><br />
+        <button id="createBtn">Create Puzzle</button>
+        <p id="adminMsg" class="small"></p>
+      </section>
+
+      <section class="panel">
+        <h2>All Puzzles</h2>
+        <table class="table" id="puzzleTable">
+          <thead>
+            <tr><th>ID</th><th>Word</th><th>Hint</th><th>Active</th><th>Action</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </div>
+    <script src="/admin.js"></script>
+  </body>
+</html>
